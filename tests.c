@@ -27,7 +27,7 @@ int main() {
 	}
 	else {
 		printf(1,"the exit status address: %d\n",status);
-		printf(1,"the exit status address: %d\n",gal);
+		printf(1,"gal is: %d\n",gal);
 		wait(&status);
 		printf(1,"the exit status address: %d\n",status);
 	}
