@@ -7,6 +7,9 @@
 #include "proc.h"
 #include "spinlock.h"
 
+
+//#include "printf.c"
+
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -170,10 +173,12 @@ fork(void)
 // An exited process remains in the zombie state
 // until its parent calls wait() to find out it exited.
 void
-exit(void)
+exit(int status)
 {
   struct proc *p;
   int fd;
+
+  proc->exit_status = status;
 
   if(proc == initproc)
     panic("init exiting");
@@ -207,6 +212,8 @@ exit(void)
 
   // Jump into the scheduler, never to return.
   proc->state = ZOMBIE;
+  //printf(1, "the exit status is:%d", status);
+
   sched();
   panic("zombie exit");
 }
@@ -214,7 +221,7 @@ exit(void)
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.
 int
-wait(void)
+wait(int* status)
 {
   struct proc *p;
   int havekids, pid;
@@ -229,6 +236,9 @@ wait(void)
       havekids = 1;
       if(p->state == ZOMBIE){
         // Found one.
+    	  if (status) {
+    		  *status = p->exit_status;
+    	  }
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;

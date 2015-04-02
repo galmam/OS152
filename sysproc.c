@@ -13,17 +13,20 @@ sys_fork(void)
   return fork();
 }
 
-int
+void
 sys_exit(void)
 {
-  exit();
-  return 0;  // not reached
+	int status;
+	argint(0,&status);
+  exit(status);
 }
 
 int
 sys_wait(void)
 {
-  return wait();
+	int status;
+	argint(0,&status);
+  return wait((int *)status);
 }
 
 int
